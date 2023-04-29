@@ -28,4 +28,6 @@ To solve the maze, click the 'Show Path' button. The script will output a path i
 
 To visualize the maze and path, use the button in the Java file. This will draw the maze and reveal the path upon pressing a button.
 
+The maze generation uses Kruskal's algorithm and the maze path finding is done by a depth-first search.
+
 Note: You can resize the window if your maze doesn't fit the current window size. My program doesn't resize automatically.
