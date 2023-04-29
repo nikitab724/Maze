@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 
-class Edge {
+class Edge { // Edge class
 	int src, dest;
 
 	Edge(int src, int dest) {
@@ -14,7 +14,7 @@ class Edge {
 	}
 }
 
-class UnionFind{
+class UnionFind{ // UnionFind class for Kruskal's algorithm to generate a maze with no cycles
 	private int[] parent;
 
 	UnionFind(int size){
@@ -24,14 +24,14 @@ class UnionFind{
 		}
 	}
 
-	int find(int x){
+	int find(int x){ // Find the root of the tree
 		if(parent[x] == x){
 			return x;
 		}
 		return parent[x] = find(parent[x]);
 	}
 
-	boolean union(int x, int y){
+	boolean union(int x, int y){ // Union two nodes and their trees
 		int rootX = find(x);
 		int rootY = find(y);
 		if(rootX == rootY){
@@ -42,19 +42,19 @@ class UnionFind{
 	}
 }
 
-class MazePanel extends JPanel{
+class MazePanel extends JPanel{ // Panel to display the maze
 	private static final int WALL_SIZE = 10;
 
 	private char[][] maze;
 	List<Integer> path;
 
-	public MazePanel(char[][] maze, List<Integer> path){
+	public MazePanel(char[][] maze, List<Integer> path){ // Constructor
 		this.maze = maze;
 		this.path = path;
 		setPreferredSize(new Dimension(maze[0].length * WALL_SIZE, maze.length * WALL_SIZE));
 	}
 
-	public void repaint(char[][] newMaze, List<Integer> path){
+	public void repaint(char[][] newMaze, List<Integer> path){ // Repaint the maze
 		this.maze = newMaze;
 		this.path = path;
 		this.repaint();
@@ -63,24 +63,24 @@ class MazePanel extends JPanel{
 	protected void paintComponent(Graphics g){
 		super.paintComponent(g);
 
-		for(int i = 0; i < maze.length; i++){
+		for(int i = 0; i < maze.length; i++){ // Paint the maze
 			for(int j = 0; j < maze[0].length; j++){
-				if(i == 1 && j == 1){
+				if(i == 1 && j == 1){ // Start point
 					g.setColor(Color.GREEN);
 				}
-				else if(i == maze.length - 2 && j == maze[0].length - 2){
+				else if(i == maze.length - 2 && j == maze[0].length - 2){ // End point
 					g.setColor(Color.RED);
 				}
-				else if(maze[i][j] == '#'){
+				else if(maze[i][j] == '#'){ // Wall
 					g.setColor(Color.BLACK);
 				}
-				else{
+				else{ // Empty space
 					g.setColor(Color.WHITE);
 				}
-				g.fillRect(j * WALL_SIZE, i * WALL_SIZE, WALL_SIZE, WALL_SIZE);
+				g.fillRect(j * WALL_SIZE, i * WALL_SIZE, WALL_SIZE, WALL_SIZE); // Fill the rectangle
 			}
 		}
-		for(int p = 0; p < path.size(); p += 2){
+		for(int p = 0; p < path.size(); p += 2){ // Paint the path in blue
 			int x = path.get(p);
 			int y = path.get(p + 1);
 			g.setColor(Color.BLUE);
@@ -89,47 +89,47 @@ class MazePanel extends JPanel{
 	}
 }
 
-public class Maze{
-	private static final int[] dx = {-1, 0, 1, 0};
-	private static final int[] dy = {0, 1, 0, -1};
-	private static final List<Integer> path = new ArrayList<Integer>();
+public class Maze{ // Main class
+	private static final int[] dx = {-1, 0, 1, 0}; // X directions
+	private static final int[] dy = {0, 1, 0, -1}; // Y directions
+	private static final List<Integer> path = new ArrayList<Integer>(); // Path list
 
 	public static void main(String[] args){
 		int width = 30;
 		int height = 30;
 		char[][] maze = generateMaze(width, height);
-		maze[maze.length - 2][maze[0].length - 2] = 'E';
+		maze[maze.length - 2][maze[0].length - 2] = 'E'; // Set a default end point
 		dfsPath(maze, 1, 1, path);
 
 		displayMaze(maze);
 	}
 
-	public static char[][] generateMaze(int width, int height){
+	public static char[][] generateMaze(int width, int height){ // Generate a maze
 		char[][] maze = new char[height * 2 + 1][width * 2 + 1];
 		for(int i = 0; i < height * 2 + 1; i++){
 			for(int j = 0; j < width * 2 + 1; j++){
-				maze[i][j] = (i % 2 == 0 || j % 2 == 0) ? '#' : ' ';
+				maze[i][j] = (i % 2 == 0 || j % 2 == 0) ? '#' : ' '; // Set the walls and empty spaces
 			}
 		}
 
-		List<Edge> edges = new ArrayList<>();
-		for(int i = 0; i < height; i++){
+		List<Edge> edges = new ArrayList<>(); // List of edges
+		for(int i = 0; i < height; i++){ // Add all edges to the list
 			for(int j = 0; j < width; j++){
 				int cell = i * width + j;
 				for(int k = 0; k < 4; k++){
 					int ni = i + dx[k];
 					int nj = j + dy[k];
-					if(ni >= 0 && ni < height && nj >= 0 && nj < width){
+					if(ni >= 0 && ni < height && nj >= 0 && nj < width){ // Check if the cell is in the maze
 						int dest = ni * width + nj;
 						edges.add(new Edge(cell, dest));
 					}
 				}
 			}
 		}
-		Collections.shuffle(edges);
-		UnionFind uf = new UnionFind(width * height);
+		Collections.shuffle(edges); // Shuffle the edges
+		UnionFind uf = new UnionFind(width * height); // UnionFind class
 
-		for(Edge edge : edges){
+		for(Edge edge : edges){ // Kruskal's algorithm, union of all the edges to create a maze with no cycles
 			if(uf.union(edge.src, edge.dest)){
 				int x = edge.src % width * 2 + 1;
 				int y = edge.src / width * 2 + 1;
@@ -142,12 +142,12 @@ public class Maze{
 		return maze;
 	}
 
-	public static boolean dfsPath(char[][] maze, int x, int y, List<Integer> path) {
-		if (x < 0 || y < 0 || x >= maze[0].length || y >= maze.length || maze[y][x] == '#' || maze[y][x] == 'v') {
+	public static boolean dfsPath(char[][] maze, int x, int y, List<Integer> path) { // Find a path from the start to the end using a depth-first search
+		if (x < 0 || y < 0 || x >= maze[0].length || y >= maze.length || maze[y][x] == '#' || maze[y][x] == 'v') { // Check if the cell is valid
 			return false;
 		}
 
-		if (maze[y][x] == 'E') {
+		if (maze[y][x] == 'E') { // Check if the cell is the end point
 			path.add(x);
 			path.add(y);
 			return true;
@@ -155,7 +155,7 @@ public class Maze{
 
 		maze[y][x] = 'v';
 
-		for (int i = 0; i < dx.length; i++) {
+		for (int i = 0; i < dx.length; i++) { // Check all directions
 			if (dfsPath(maze, x + dx[i], y + dy[i], path)) {
 				path.add(x);
 				path.add(y);
@@ -166,7 +166,7 @@ public class Maze{
 		return false;
 	}
 
-	public static String pathToDirections(List<Integer> path){
+	public static String pathToDirections(List<Integer> path){ // Convert the path to the cardinal directions string printed above when you "show path"
 		StringBuilder directions = new StringBuilder();
 		for(int i = path.size() - 4; i >= 0; i -= 2){
 			int dx = path.get(i + 2) - path.get(i);
@@ -184,7 +184,7 @@ public class Maze{
 		return directions.toString();
 	}
 
-	public static void displayMaze(char[][] initialMaze){
+	public static void displayMaze(char[][] initialMaze){ // Display the maze a bunch of buttons and sliders, you get the point :D
 		AtomicReference<char[][]> mazeRef = new AtomicReference<>(initialMaze);
 		JFrame frame = new JFrame("maze");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
