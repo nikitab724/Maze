@@ -18,11 +18,11 @@ To use the Maze Generator and Solver, follow these steps:
 **Usage**
 **Generate a Maze**
 
-To generate a maze, run the Maze.java file and provide the desired dimensions (n x m) as input. The generated maze will be stored as a matrix, with each cell containing information about the walls present or absent.
+To generate a maze, run the Maze.java file and provide the desired dimensions (n x m) as input through the use of the sliders. The generated maze will be stored as a matrix, with each cell containing information about the walls present or absent.
 
 **Solve the Maze**
 
-To solve the maze, run the solve_maze.py script. The script will output a path in the form of directions (S, E, N, W), representing South, East, North, and West respectively.
+To solve the maze, click the 'Show Path' button. The script will output a path in the form of directions (S, E, N, W), representing South, East, North, and West respectively and will visually show you the path.
 
 **Visualize the Maze and Path**
 
